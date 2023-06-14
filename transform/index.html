@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html, body{
+      margin:0;
+    }
+    #canvas {
+      width: 400px;
+      height: 300px;
+    }
+  </style>
+  <link rel="stylesheet" href="../webgl-tutorials.css">
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="uiContainer">
+    <div id="ui">
+      <div id="x"></div>
+      <div id="y"></div>
+    </div>
+  </div>
+</body>
+<script id="vertex-shader-2d" type="nodjs">
+  attribute vec2 a_position;
+  uniform vec2 u_resolution;
+  uniform vec2 u_translation;
+
+
+  void main() {
+    vec2 position  = a_position + u_translation;
+    vec2 zeroToOne = position / u_resolution;
+    vec2 zeroToTwo = zeroToOne * 2.0;
+    vec2 clipSpace = zeroToTwo - 1.0;
+    gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+  }
+</script>
+<script id="fragment-shader-2d" type="nodjs">
+  precision mediump float;
+  uniform vec4 u_color;
+  void main() {
+    gl_FragColor = u_color;
+  }
+
+</script>
+<script src="../webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+<script src="./main.js"></script>
+</html>
