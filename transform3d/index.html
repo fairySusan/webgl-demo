@@ -10,8 +10,8 @@
       margin:0;
     }
     #canvas {
-      width: 400px;
-      height: 300px;
+      width: 100vw;
+      height: 100vh;
     }
   </style>
   <link rel="stylesheet" href="../webgl-tutorials.css">
@@ -20,29 +20,38 @@
   <canvas id="canvas"></canvas>
   <div id="uiContainer">
     <div id="ui">
+      <div id="fieldOfView"></div>
+      <div id="fudgeFactor"></div>
       <div id="x"></div>
       <div id="y"></div>
-      <div id="angle"></div>
+      <div id="z"></div>
+      <div id="angleX"></div>
+      <div id="angleY"></div>
+      <div id="angleZ"></div>
       <div id="scaleX"></div>
       <div id="scaleY"></div>
+      <div id="scaleZ"></div>
     </div>
   </div>
 </body>
 <script id="vertex-shader-2d" type="nodjs">
-  attribute vec2 a_position;
-  uniform vec2 u_resolution;
+  attribute vec4 a_position;
+  attribute vec4 a_color;
+  uniform mat4 u_matrix;
+  uniform float u_fudgeFactor;
 
-  uniform mat3 u_matrix;
+  varying vec4 v_color;
 
   void main() {
-    gl_Position = vec4((u_matrix*vec3(a_position, 1)).xy, 0, 1);
+    gl_Position =  u_matrix * a_position;;
+    v_color = a_color;
   }
 </script>
 <script id="fragment-shader-2d" type="nodjs">
   precision mediump float;
-  uniform vec4 u_color;
+  varying vec4 v_color;
   void main() {
-    gl_FragColor = u_color;
+    gl_FragColor = v_color;
   }
 
 </script>
