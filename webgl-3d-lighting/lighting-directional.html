@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  html, body{
+    margin:0;
+  }
+  #canvas {
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+<link rel="stylesheet" href="../webgl-tutorials.css">
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="uiContainer">
+    <div id="ui">
+      <div id="fRotation"></div>
+    </div>
+  </div>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec3 a_normal;
+
+uniform mat4 u_matrix;
+uniform mat4 u_worldInverseTransposeMatrix;
+varying vec3 v_normal;
+void main() {
+  gl_Position = u_matrix * a_position;
+  // 物体旋转、缩放时，法向量的方向也要跟着变化
+  v_normal = mat3(u_worldInverseTransposeMatrix) * a_normal;
+}
+</script>
+
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec3 v_normal;
+
+uniform vec3 u_reverseLightDirection;
+uniform vec4 u_color;
+
+void main() {
+  vec3 normal = normalize(v_normal);
+  // 1.将方向光的方向和面的朝向`点乘`，就可以得到两个方向的余弦值
+  float light = dot(normal, u_reverseLightDirection);
+  gl_FragColor = u_color;
+  // 2.将点乘的结果跟颜色值相乘
+  gl_FragColor.rgb *= light;
+}
+</script>
+<script src="../webgl-utils.js"></script>
+<script src="../m4.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+<script src="./lighting-directional.js"></script>
+</html>
