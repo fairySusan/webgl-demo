@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  html, body{
+    margin:0;
+  }
+  #canvas {
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+<link rel="stylesheet" href="../webgl-tutorials.css">
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="uiContainer">
+    <div id="ui">
+      <div id="fRotation"></div>
+      <div id="shininess"></div>
+      <div id="lightRotationX"></div>
+      <div id="lightRotationY"></div>
+      <div id="innerLimit"></div>
+      <div id="outerLimit"></div>
+    </div>
+  </div>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec3 a_normal;
+
+uniform vec3 u_lightWorldPosition;
+uniform vec3 u_viewWorldPosition;
+
+uniform mat4 u_world;
+uniform mat4 u_worldViewProjection;
+uniform mat4 u_worldInverseTranspose;
+
+varying vec3 v_normal;
+varying vec3 v_surfaceToLight;
+varying vec3 v_surfaceToView;
+
+void main() {
+  gl_Position = u_worldViewProjection * a_position;
+  // 物体旋转、缩放时，法向量的方向也要跟着变化
+  v_normal = mat3(u_worldInverseTranspose) * a_normal;
+  // 得到点光源和物体表面上的每一个顶点之间的矢量
+  vec3 surfaceWorldPosition = (u_world * a_position).xyz;
+  v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
+  v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition;
+}
+</script>
+
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec3 v_normal;
+varying vec3 v_surfaceToLight;
+varying vec3 v_surfaceToView;
+
+uniform vec4 u_color;
+uniform float u_shininess;
+uniform vec3 u_lightDirection;
+uniform float u_innerLimit;
+uniform float u_outerLimit;
+uniform vec3 u_lightColor;
+uniform vec3 u_specularColor;
+
+void main() {
+  vec3 normal = normalize(v_normal);
+  vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
+  vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+  vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
+
+  float light = 0.0;
+  float specular = 0.0;
+  float dotFromDirection = dot(surfaceToLightDirection, -u_lightDirection);
+
+  // isLimit>dotFromDirection inLight为0, 否则为1
+  float limitRange = u_innerLimit - u_outerLimit;
+  float inLight = clamp((dotFromDirection - u_outerLimit)/limitRange, 0.0, 1.0);
+  light = inLight * dot(normal, surfaceToLightDirection);
+  specular = inLight * pow(dot(normal, halfVector), u_shininess);
+
+  gl_FragColor = u_color;
+  // 2.将点乘的结果跟颜色值相乘
+  gl_FragColor.rgb *= light;
+  gl_FragColor.rgb += specular;
+}
+</script>
+<script src="../webgl-utils.js"></script>
+<script src="../m4.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+<script src="./lighting-spot.js"></script>
+</html>
