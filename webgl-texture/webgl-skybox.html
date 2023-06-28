@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html,body {
+      margin: 0;
+    }
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script id="skybox-vertex-shader" type="x-shader/x-vertex">
+  attribute vec4 a_position;
+  varying vec4 v_position;
+  void main() {
+    v_position = a_position;
+    gl_Position = a_position;
+    gl_Position.z = 1.0;
+  }
+</script>
+<script id="skybox-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+uniform samplerCube u_skybox;
+uniform mat4 u_viewProjectionInverseMatrix;
+
+varying vec4 v_position;
+void main () {
+  vec4 direction = u_viewProjectionInverseMatrix * v_position;
+  gl_FragColor = textureCube(u_skybox, normalize(direction.xyz/direction.w));
+}
+</script>
+
+<script id="envmap-vertex-shader" type="x-shader/x-vertex">
+  attribute vec4 a_position;
+  attribute vec3 a_normal;
+
+  uniform mat4 u_worldViewProjection;
+  uniform mat4 u_world;
+
+  varying vec3 v_worldPosition;
+  varying vec3 v_worldNormal;
+  void main() {
+    gl_Position = u_worldViewProjection * a_position;
+    v_worldPosition = (u_world * a_position).xyz;
+
+    v_worldNormal = mat3(u_world) * a_normal;
+  }
+</script>
+
+<script id="envmap-fragment-shader" type="x-shader/x-fragment">
+  precision highp float;
+  varying vec3 v_worldPosition;
+  varying vec3 v_worldNormal;
+  
+  uniform samplerCube u_texture;
+  uniform vec3 u_worldCameraPosition;
+  
+  void main() {
+    vec3 worldNormal = normalize(v_worldNormal);
+    vec3 eyeToSurfaceDir = normalize(v_worldPosition - u_worldCameraPosition);
+    vec3 direction = reflect(eyeToSurfaceDir, worldNormal);
+  
+    gl_FragColor = textureCube(u_texture, direction);
+  }
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+<script src="./webgl-skybox.js"></script>
+</html>
