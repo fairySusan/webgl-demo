@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-shader">
+attribute vec4 a_position;
+uniform mat4 u_matrix;
+
+varying vec3 v_normal;
+
+void main() {
+  gl_Position = u_matrix * a_position;
+  v_normal = normalize(a_position.xyz);
+}
+</script>
+
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+precision mediump float;
+
+varying vec3 v_normal;
+
+uniform samplerCube u_texture;
+void main() {
+  gl_FragColor = textureCube(u_texture, normalize(v_normal));
+}
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+<script src="./webgl-cube-texture.js"></script>
+</html>

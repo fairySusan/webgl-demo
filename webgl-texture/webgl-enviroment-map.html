@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  html, body {
+    margin: 0;
+  }
+  #canvas {
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-vertex">
+  attribute vec4 a_position;
+  attribute vec3 a_normal;
+
+  uniform mat4 u_worldViewProjection;
+  uniform mat4 u_world;
+
+  varying vec3 v_worldPosition;
+  varying vec3 v_worldNormal;
+  void main() {
+    gl_Position = u_worldViewProjection * a_position;
+    v_worldPosition = (u_world * a_position).xyz;
+
+    v_worldNormal = mat3(u_world) * a_normal;
+  }
+
+</script>
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+precision highp float;
+varying vec3 v_worldPosition;
+varying vec3 v_worldNormal;
+
+uniform samplerCube u_texture;
+uniform vec3 u_worldCameraPosition;
+
+void main() {
+  vec3 worldNormal = normalize(v_worldNormal);
+  vec3 eyeToSurfaceDir = normalize(v_worldPosition - u_worldCameraPosition);
+  vec3 direction = reflect(eyeToSurfaceDir, worldNormal);
+
+  gl_FragColor = textureCube(u_texture, direction);
+}
+
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+<script src="./webgl-enviroment-map.js"></script>
+</html>
