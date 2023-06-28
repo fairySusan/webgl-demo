@@ -86,7 +86,7 @@ function main() {
 
     gl.useProgram(program)
 
-    gl.enableVertexAttribArray(positionBuffer);
+    gl.enableVertexAttribArray(positionLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     var size = 3;          // 3 components per iteration
     var type = gl.FLOAT;   // the data is 32bit floats
