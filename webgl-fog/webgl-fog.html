@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    @import url("https://webglfundamentals.org/webgl/resources/webgl-tutorials.css");
+    html, body {
+      margin: 0;
+    }
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+  </style>
+</head>   
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="uiContainer">
+    <div id="ui"></div>
+  </div>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec2 a_texcoord;
+
+uniform mat4 u_worldView;
+uniform mat4 u_projection;
+varying vec2 v_texcoord;
+varying float v_fogDepth;
+void main () {
+  gl_Position = u_projection * u_worldView * a_position;
+  v_texcoord = a_texcoord;
+  v_fogDepth = -(u_worldView * a_position).z;
+}
+</script>
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+precision mediump float;
+varying vec2 v_texcoord;
+varying float v_fogDepth;
+
+uniform sampler2D u_texture;
+uniform vec4 u_fogColor;
+uniform float u_fogNear;
+uniform float u_fogFar;
+
+void main() {
+  vec4 color = texture2D(u_texture, v_texcoord);
+  float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth);
+  gl_FragColor = mix(color, u_fogColor, fogAmount);
+}
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+<script src="./webgl-fog.js"></script>
+</html>
