@@ -4,41 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="webgl-tutorials.css">
 </head>
 <body>
-  <canvas id="canvas" width="800" height="600"></canvas>
-  <div id="uiContainer">
-    <div id="ui">
-      <div id="x"></div>
-      <div id="y"></div>
-      <div id="angle"></div>
-      <div id="scaleX"></div>
-      <div id="scaleY"></div>
-    </div>
-  </div>
+  <ul>
+    <li><a target="_blank" href="./gradient-triangle/index.html">变换渐变三角形</a></li>
+    <li><a target="_blank" href="./image-process/index.html">图片的处理</a></li>
+    <li><a target="_blank" href="./less-code-more-fun/less-code-more-fun.html">码少趣多</a></li>
+    <li><a target="_blank" href="./transform/index.html">二维变换</a></li>
+    <li><a target="_blank" href="./transform3d/index.html">三维变换</a></li>
+    <li><a target="_blank" href="./webgl-3d-camera/index.html">三维相机</a></li>
+    <li><a target="_blank" href="./webgl-3d-lighting/lighting-directional.html">方向光</a></li>
+    <li><a target="_blank" href="./webgl-3d-lighting/lighting-dot.html">点光源</a></li>
+    <li><a target="_blank" href="./webgl-3d-lighting/lighting-spot.html">聚光源</a></li>
+    <li><a target="_blank" href="./webgl-drawing-multiple/drawing-multiple.html">绘制多个物体</a></li>
+    <li><a target="_blank" href="./webgl-fog/webgl-fog.html">雾的实现</a></li>
+    <li><a target="_blank" href="./webgl-texture/webgl-texture-2d.html">二维贴图</a></li>
+    <li><a target="_blank" href="./webgl-texture/webgl-texture-3d.html">三维贴图</a></li>
+    <li><a target="_blank" href="./webgl-texture/webgl-enviroment-map.html">环境贴图</a></li>
+    <li><a target="_blank" href="./webgl-texture/webgl-cube-texture.html">立方体贴图</a></li>
+    <li><a target="_blank" href="./webgl-texture/webgl-skybox.html">天空盒贴图</a></li>
+  </ul>
 </body>
-<script id="vertex-shader-2d" type="notjs">
-  attribute vec2 a_position;
-  varying vec4 v_color;
-  uniform mat3 u_matrix;
-
-  void main() {
-   gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-   v_color = gl_Position * 0.5 + 0.5;
-  }
-</script>
-<script id="fragment-shader-2d" type="notjs">
-  precision mediump float;
-  varying vec4 v_color;
-
-  void main() {
-    gl_FragColor = v_color;
-  }
-</script>
-<script src="./webgl-utils.js"></script>
-<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
-<script src="https://webglfundamentals.org/webgl/resources/m3.js"></script>
-<script src="./main.js"></script>
 </html>

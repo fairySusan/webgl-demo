@@ -27,12 +27,12 @@ function main() {
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture)
 
   const faceInfo = [
-    {target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,url: 'http://127.0.0.1:5500/webgl-texture/pos-x.jpg'},
-    {target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,url: 'http://127.0.0.1:5500/webgl-texture/neg-x.jpg'},
-    {target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,url: 'http://127.0.0.1:5500/webgl-texture/pos-y.jpg'},
-    {target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,url: 'http://127.0.0.1:5500/webgl-texture/neg-y.jpg',},
-    {target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,url: 'http://127.0.0.1:5500/webgl-texture/pos-z.jpg',},
-    {target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,url: 'http://127.0.0.1:5500/webgl-texture/neg-z.jpg',},
+    {target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,url: './pos-x.jpg'},
+    {target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,url: './neg-x.jpg'},
+    {target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,url: './pos-y.jpg'},
+    {target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,url: './neg-y.jpg',},
+    {target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,url: './pos-z.jpg',},
+    {target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,url: './neg-z.jpg',},
   ]
   faceInfo.forEach(faceInfo => {
     const {target, url} = faceInfo

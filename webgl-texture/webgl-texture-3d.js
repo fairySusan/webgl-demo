@@ -41,7 +41,7 @@ function main() {
                 new Uint8Array([0, 0, 255, 255]));
   // Asynchronously load an image
   var image = new Image();
-  image.src = "http://127.0.0.1:5500/webgl-texture/f-texture.png";
+  image.src = "./f-texture.png";
   image.addEventListener('load', function() {
     // Now that the image has loaded make copy it to the texture.
     gl.bindTexture(gl.TEXTURE_2D, texture);
