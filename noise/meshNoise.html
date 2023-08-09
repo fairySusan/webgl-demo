@@ -51,6 +51,10 @@
     vec2 ipos = floor(st); 
     //vec3 color = vec3(random( ipos ));
 
+    /**
+      fract提取小数部分,左下角第一个格子(0.00，0.100，0.200...)取小数就是rgb(0,0,0)、rgb(100,0,0)...rgb(900,0,0)...
+      所以只有黑色到红色的过渡,竖向则是rgb(0,0,0)、rgb(0,100,0)...rgb(0,900,0),所以是黑色到绿色的过渡
+    **/
     vec2 fpos = fract(st);  // 得到小数的那一部分的坐标
     vec3 color = vec3(fpos,0.0);
     
