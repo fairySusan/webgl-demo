@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-vertex">
+  attribute vec2 a_position;
+  uniform vec2 u_resolution;
+  varying vec2 v_resolution;
+  void main() {
+    vec2 zeroToOne = a_position / u_resolution;
+    vec2 zeroToTwo = zeroToOne * 2.0;
+    vec2 clipSpace = zeroToTwo - 1.0;
+    gl_PointSize=20.0;
+    gl_Position = vec4((clipSpace * vec2(1,-1)), 0, 1);
+    v_resolution = u_resolution;
+  }
+</script>
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+  precision mediump float;
+  varying vec2 v_resolution;
+
+  float random(vec2 st) {
+    return fract(sin(dot(st.xy,  vec2(12.9898,78.233)))*43758.5453123);
+  }
+
+  void main () {
+    vec2 st = gl_FragCoord.xy/v_resolution.xy;
+
+    st *= 10.0; // 把0~1的范围扩大到0~10的范围，可以看到每一行是10个格子
+    /**
+      floor得到整数的那一部分的坐标，屏幕坐标是左下角是（0，0）
+      坐标是0.0，0.1，0.2...向下取整都是0，所以左下角第一个格子（坐标从0.0到0.9组成了那个格子）的颜色就是（0，0，0）。
+      左下角第二个格子(1.0到1.9组成)坐标向下取整为1，所以颜色值为（1，1，1)所以是白色
+    **/
+    vec2 ipos = floor(st); 
+    //vec3 color = vec3(random( ipos ));
+
+    vec2 fpos = fract(st);  // 得到小数的那一部分的坐标
+    vec3 color = vec3(fpos,0.0);
+    
+    gl_FragColor = vec4(color,1.0);
+  }
+</script>
+<script src="../webgl-utils.js"></script>
+<script src="./meshNoise.js"></script>
+</html>
