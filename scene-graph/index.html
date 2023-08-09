@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html, body {
+      margin: 0;
+    }
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script id="vertex-shader-3d" type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec3 a_normal;
+attribute vec4 a_color;
+uniform mat4 u_matrix;
+uniform mat4 u_worldInverseTransposeMatrix;
+varying vec4 v_color;
+varying vec3 v_normal;
+
+void main () {
+  gl_Position = u_matrix * a_position;
+  v_color = a_color;
+  v_normal = mat3(u_worldInverseTransposeMatrix) * a_normal;
+}
+</script>
+<script id="fragment-shader-3d" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 v_color;
+varying vec3 v_normal;
+
+uniform vec3 u_reverseLightDirection;
+uniform vec4 u_colorMult;
+uniform vec4 u_colorOffset;
+
+void main() {
+  vec3 normal = normalize(v_normal);
+  // 1.将方向光的方向和面的朝向`点乘`，就可以得到两个方向的余弦值
+  float light = dot(normal, u_reverseLightDirection);
+  gl_FragColor = v_color * u_colorMult + u_colorOffset;
+  //float globalLight = light + 4.0;
+  //gl_FragColor.rgb *= globalLight;
+}
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/primitives.js"></script>
+<script src="./main.js"></script>
+</html>
