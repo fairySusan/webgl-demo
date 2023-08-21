@@ -84,6 +84,7 @@ function main () {
     then = time;
 
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+    // 相机在一个圆圈内绕行
     let cameraPosition = [Math.cos(time * 0.1) * 2, 0, Math.sin(time * 0.1) * 2];
     const target = [0,0,0]
     const up = [0,1,0]
@@ -129,6 +130,7 @@ function main () {
     gl.uniformMatrix4fv(viewProjectionInverseLocation, false, viewDirectionProjectionInverseMatrix);
     gl.uniform1i(skyboxLocation, 0)
 
+    // 画了一个矩形
     gl.drawArrays(gl.TRIANGLES, 0, 1*6)
     
     requestAnimationFrame(drawScene)
@@ -139,12 +141,12 @@ main()
 
 function setGeometry(gl) {
   const positions = new Float32Array([
-   -1, -1,
-    1, -1,
-   -1,  1,
-   -1,  1,
-    1, -1,
-    1,  1,
+   -1.0, -1.0,
+    1.0, -1.0,
+   -1.0,  1.0,
+   -1.0,  1.0,
+    1.0, -1.0,
+    1.0,  1.0,
   ])
   gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
 }

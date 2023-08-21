@@ -19,23 +19,44 @@
 </body>
 <script id="skybox-vertex-shader" type="x-shader/x-vertex">
   attribute vec4 a_position;
-  varying vec4 v_position;
+  uniform mat4 u_world;
+  uniform mat4 u_viewProjectionInverseMatrix;
+  uniform mat4 u_worldViewProjection;
+  varying vec3 v_worldDirection;
+
+  vec3 transformDirection( in vec4 dir, in mat4 matrix ) {
+    return normalize( (matrix * dir).xyz );
+  }
+
   void main() {
-    v_position = a_position;
+    v_worldDirection = transformDirection( a_position, u_world );
     gl_Position = a_position;
     gl_Position.z = 1.0;
   }
 </script>
 <script id="skybox-fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
-uniform samplerCube u_skybox;
-uniform mat4 u_viewProjectionInverseMatrix;
 
-varying vec4 v_position;
+#define RECIPROCAL_PI 0.3183098861837907;
+#define RECIPROCAL_PI2 0.15915494309189535;
+
+uniform sampler2D u_texture;
+uniform vec3 u_worldCameraPosition;
+varying vec3 v_worldDirection;
+
+vec2 equirectUv( in vec3 dir ) {
+	// dir is assumed to be unit length
+	float u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;
+	float v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;
+	return vec2( u, v );
+}
+
 void main () {
-  vec4 direction = u_viewProjectionInverseMatrix * v_position;
+  vec3 direction = normalize(v_worldDirection - u_worldCameraPosition);
+  // vec3 direction = normalize( v_worldDirection );
   // camera的移动会带动u_viewProjectionInverseMatrix的变化，从而引起gl_FragColor的变化
-  gl_FragColor = textureCube(u_skybox, normalize(direction.xyz/direction.w));
+  vec2 sampleUV = equirectUv( direction );
+  gl_FragColor = texture2D(u_texture, sampleUV);
 }
 </script>
 
@@ -74,5 +95,5 @@ void main () {
 </script>
 <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
 <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
-<script src="./webgl-skybox.js"></script>
+<script src="./webgl-equirectangular.js"></script>
 </html>
